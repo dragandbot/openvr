@@ -103,55 +103,6 @@ endif()
 ## OpenGL / GLU
 find_package(OpenGL REQUIRED)
 
-## GLEW 1.11
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  # On GNU/Linux, glew can be found on the package manager. 
-  find_package(GLEW 1.11 REQUIRED)
-else()
-  # Otherwise, use the shipped binaries.
-  find_library(GLEW_LIBRARIES
-    NAMES
-      GLEW
-      glew32
-    PATHS
-      ${THIRDPARTY_DIR}/glew/glew-1.11.0/lib/Release
-    PATH_SUFFIXES
-      osx32
-      ${WINDOWS_PATH_SUFFIXES}
-  )
-  set(GLEW_INCLUDE_DIR ${THIRDPARTY_DIR}/glew/glew-1.11.0/include)
-endif()
-
-## SDL 2
-## osx32 and linux32 cmake can spot each others' .so and .a files, so keep them apart
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  foreach(lib ${SDL_REQUIRED_LIBRARIES})
-    find_library(${lib}_LIBRARY
-      NAMES
-        ${lib}
-      PATHS
-        ${THIRDPARTY_DIR}/sdl2-2.0.3/bin
-      PATH_SUFFIXES
-        osx32
-    )
-    list(APPEND SDL2_LIBRARIES ${${lib}_LIBRARY})
-  endforeach()
-else()
-  foreach(lib ${SDL_REQUIRED_LIBRARIES})
-    find_library(${lib}_LIBRARY
-      NAMES
-        ${lib}
-      PATHS
-        ${THIRDPARTY_DIR}/sdl2-2.0.3/bin
-      PATH_SUFFIXES
-        linux${PLATFORM}
-        ${WINDOWS_PATH_SUFFIXES}
-    )
-    list(APPEND SDL2_LIBRARIES ${${lib}_LIBRARY})
-  endforeach()
-endif()
-set(SDL2_INCLUDE_DIR ${THIRDPARTY_DIR}/sdl2-2.0.3/include)
-
 ## Vulkan
 if(NOT (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
   find_library(VULKAN_LIBRARY
